@@ -38,7 +38,11 @@ class Parser:
         return self.index < len(self.parsed) - 1
 
     def advance(self) -> None:
-        pass
+        """
+        Reads the next command, updating current_command and the command index.
+        """
+        self.index += 1
+        self.current_command = self.parsed[self.index]
 
     def commandType(self) -> None:
         pass
