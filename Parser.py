@@ -31,8 +31,11 @@ class Parser:
             if instruction := stripped_line.strip():
                 self.parsed.append(instruction)
 
-    def hasMoreCommands(self) -> None:
-        pass
+    def hasMoreCommands(self) -> bool:
+        """
+        Returns a boolean, denoting if there more commands in the parsed input.
+        """
+        return self.index < len(self.parsed) - 1
 
     def advance(self) -> None:
         pass
