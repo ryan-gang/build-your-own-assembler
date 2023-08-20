@@ -1,4 +1,3 @@
-# %%
 import re
 from typing import Any
 
@@ -59,6 +58,8 @@ class Parser:
             return Parser.C_COMMAND
         elif self._is_l_command(command):
             return Parser.L_COMMAND
+        else:
+            return "Unidentified"
 
     def symbol(self) -> None:
         pass
@@ -83,10 +84,10 @@ class Parser:
         return self._is_match(a_inst_1, command) or self._is_match(a_inst_2, command)
 
     def _is_c_command(self, command: str) -> bool:
-        token1 = r"[ADM]{0,1}"
+        token1 = r"[ADM10]{0,1}"
         operation = r"[-+!|&]{0,1}"
         token2 = r"[ADM10]"
-        jump = r"JGT|JEQ|JGE|JLT|JNE|JLE|JMP"
+        jump = r"(JGT|JEQ|JGE|JLT|JNE|JLE|JMP)"
 
         # dest=comp
         c_dest_comp = re.compile(token1 + "=" + token1 + operation + token2)
@@ -103,9 +104,9 @@ class Parser:
     def _is_l_command(self, command: str) -> bool:
         a_symbol = r"[0-9A-Za-z_.$:]+"
 
-        l_inst = re.compile("(" + a_symbol + ")")
+        l_inst = re.compile(r"\(" + a_symbol + r"\)")
 
         return self._is_match(l_inst, command)
 
     def _is_match(self, pattern: re.Pattern[str], string: str) -> bool:
-        return re.match(pattern, string) is not None
+        return re.fullmatch(pattern, string) is not None
