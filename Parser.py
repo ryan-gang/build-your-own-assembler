@@ -110,3 +110,8 @@ class Parser:
 
     def _is_match(self, pattern: re.Pattern[str], string: str) -> bool:
         return re.fullmatch(pattern, string) is not None
+
+    def _match_result(self, pattern: re.Pattern[str], string: str) -> Optional[str]:
+        matched = re.search(pattern, string)
+        if matched is not None:
+            return matched.group()
