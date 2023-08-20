@@ -80,6 +80,30 @@ class Parser:
         if self._is_match(c_dest_comp, command):
             return self._match_result(destination, command.split("=")[0])
 
+    def comp(self) -> Optional[str]:
+        command = self.current_command
+
+        token1 = r"[ADM10]{0,1}"
+        operation = r"[-+!|&]{0,1}"
+        token2 = r"[ADM10]"
+        jump = r"(JGT|JEQ|JGE|JLT|JNE|JLE|JMP)"
+        computation = re.compile(token1 + operation + token2)
+
+        # dest=comp
+        c_dest_comp = re.compile(token1 + "=" + token1 + operation + token2)
+        if self._is_match(c_dest_comp, command):
+            return self._match_result(computation, command.split("=")[1])
+
+        # comp
+        c_comp = re.compile(token1 + operation + token2)
+        if self._is_match(c_comp, command):
+            return self._match_result(computation, command)
+
+        # comp;jump
+        c_comp_jump = re.compile(token1 + operation + token2 + ";" + jump)
+        if self._is_match(c_comp_jump, command):
+            return self._match_result(computation, command)
+
     def _is_a_command(self, command: str) -> bool:
         a_constant = r"\d+(\.\d+)?"
         a_symbol = r"[0-9A-Za-z_.$:]+"
