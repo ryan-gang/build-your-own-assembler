@@ -104,6 +104,15 @@ class Parser:
         if self._is_match(c_comp_jump, command):
             return self._match_result(computation, command)
 
+    def jump(self) -> Optional[str]:
+        command = self.current_command
+
+        jump = r"(JGT|JEQ|JGE|JLT|JNE|JLE|JMP)"
+        c_jump = re.compile(jump)
+
+        # comp;jump
+        return self._match_result(c_jump, command)
+
     def _is_a_command(self, command: str) -> bool:
         a_constant = r"\d+(\.\d+)?"
         a_symbol = r"[0-9A-Za-z_.$:]+"
