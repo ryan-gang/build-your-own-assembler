@@ -67,6 +67,19 @@ class Parser:
 
         return self._match_result(al_symbol, command)
 
+    def dest(self) -> Optional[str]:
+        command = self.current_command
+
+        token1 = r"[ADM10]{0,1}"
+        operation = r"[-+!|&]{0,1}"
+        token2 = r"[ADM10]"
+        destination = re.compile(token1)
+
+        # dest=comp
+        c_dest_comp = re.compile(token1 + "=" + token1 + operation + token2)
+        if self._is_match(c_dest_comp, command):
+            return self._match_result(destination, command.split("=")[0])
+
     def _is_a_command(self, command: str) -> bool:
         a_constant = r"\d+(\.\d+)?"
         a_symbol = r"[0-9A-Za-z_.$:]+"
