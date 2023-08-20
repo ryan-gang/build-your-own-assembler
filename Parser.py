@@ -1,5 +1,5 @@
 import re
-from typing import Any
+from typing import Any, Optional
 
 
 class Parser:
@@ -58,20 +58,14 @@ class Parser:
             return Parser.C_COMMAND
         elif self._is_l_command(command):
             return Parser.L_COMMAND
-        else:
-            return "Unidentified"
 
-    def symbol(self) -> None:
-        pass
+    def symbol(self) -> Optional[str]:
+        command = self.current_command
 
-    def dest(self) -> None:
-        pass
+        symbol = r"[0-9A-Za-z_.$:]+"
+        al_symbol = re.compile(symbol)
 
-    def comp(self) -> None:
-        pass
-
-    def jump(self) -> None:
-        pass
+        return self._match_result(al_symbol, command)
 
     def _is_a_command(self, command: str) -> bool:
         a_constant = r"\d+(\.\d+)?"
