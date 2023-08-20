@@ -51,6 +51,9 @@ class Parser:
         self.current_command = self.parsed[self.index]
 
     def commandType(self) -> Any:
+        """
+        Returns the type of the current command : A_COMMAND (0), C_COMMAND (1), L_COMMAND (2).
+        """
         command = self.current_command
         if self._is_a_command(command):
             return Parser.A_COMMAND
@@ -60,6 +63,9 @@ class Parser:
             return Parser.L_COMMAND
 
     def symbol(self) -> Optional[str]:
+        """
+        Returns the symbol or decimal Xxx of the current command @Xxx or (Xxx).
+        """
         command = self.current_command
 
         symbol = r"[0-9A-Za-z_.$:]+"
@@ -68,6 +74,9 @@ class Parser:
         return self._match_result(al_symbol, command)
 
     def dest(self) -> Optional[str]:
+        """
+        Returns the dest mnemonic in the current C-command.
+        """
         command = self.current_command
 
         token1 = r"[ADM10]{0,1}"
@@ -81,6 +90,9 @@ class Parser:
             return self._match_result(destination, command.split("=")[0])
 
     def comp(self) -> Optional[str]:
+        """
+        Returns the comp mnemonic in the current C-command.
+        """
         command = self.current_command
 
         token1 = r"[ADM10]{0,1}"
@@ -105,6 +117,9 @@ class Parser:
             return self._match_result(computation, command)
 
     def jump(self) -> Optional[str]:
+        """
+        Returns the jump mnemonic in the current C-command.
+        """
         command = self.current_command
 
         jump = r"(JGT|JEQ|JGE|JLT|JNE|JLE|JMP)"
@@ -114,6 +129,9 @@ class Parser:
         return self._match_result(c_jump, command)
 
     def _is_a_command(self, command: str) -> bool:
+        """
+        Return a bool denoting if command is an A command.
+        """
         a_constant = r"\d+(\.\d+)?"
         a_symbol = r"[0-9A-Za-z_.$:]+"
         a_start = r"^@"
@@ -124,6 +142,9 @@ class Parser:
         return self._is_match(a_inst_1, command) or self._is_match(a_inst_2, command)
 
     def _is_c_command(self, command: str) -> bool:
+        """
+        Return a bool denoting if command is a C command.
+        """
         token1 = r"[ADM10]{0,1}"
         operation = r"[-+!|&]{0,1}"
         token2 = r"[ADM10]"
@@ -142,6 +163,9 @@ class Parser:
         )
 
     def _is_l_command(self, command: str) -> bool:
+        """
+        Return a bool denoting if command is a L command.
+        """
         a_symbol = r"[0-9A-Za-z_.$:]+"
 
         l_inst = re.compile(r"\(" + a_symbol + r"\)")
