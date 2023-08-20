@@ -26,6 +26,26 @@ class Code:
         "JLE": 6,
         "JMP": 7,
     }
+    comp_symbol_table = {
+        "0": 42,
+        "1": 63,
+        "-1": 58,
+        "D": 12,
+        "A": 48,
+        "!D": 13,
+        "!A": 49,
+        "-D": 15,
+        "-A": 51,
+        "D+1": 31,
+        "A+1": 55,
+        "D-1": 14,
+        "A-1": 50,
+        "D+A": 2,
+        "D-A": 19,
+        "A-D": 7,
+        "D&A": 0,
+        "D|A": 21,
+    }
 
     def dest(self, mnemonic: Optional[str]) -> str:
         mnemonic = self._sort_string(mnemonic)
@@ -33,6 +53,14 @@ class Code:
 
     def jump(self, mnemonic: Optional[str]) -> str:
         return self._to_binary(Code.jmp_symbol_table[mnemonic])
+
+    def comp(self, mnemonic: str) -> str:
+        a_bit = "0"
+        if "M" in mnemonic:
+            a_bit = "1"
+            mnemonic.replace("M", "A")
+        c_bits = self._to_binary(Code.comp_symbol_table[mnemonic])
+        return a_bit + c_bits
 
     def _to_binary(self, integer: int) -> str:
         return bin(integer).split("b")[1]
