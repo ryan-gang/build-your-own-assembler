@@ -1,6 +1,7 @@
 from Parser import Parser
 from Code import Code
 from SymbolTable import SymbolTable
+from typing import Optional
 
 
 class Assembler:
@@ -15,9 +16,9 @@ class Assembler:
             p.advance()
             if p.command_type() == 2:  # L
                 symbol = p.symbol()
-                c_line = p.index - p.l_ins
+                c_line = p.index - p.l_ins_count
                 st.add_entry(symbol, c_line)
-                p.l_ins += 1
+                p.l_ins_count += 1
 
         p.__init_vars__()  # Reset variables for 2nd pass.
 
@@ -27,18 +28,24 @@ class Assembler:
             c_type = p.command_type()
             if c_type == 0:  # A
                 symbol = p.symbol()
-                if p.a_command_type() == 1:  # Constant
-                    ins = c.value(symbol)
-                else:
-                    if st.contains(symbol):
-                        val = st.get_address(symbol)
-                        ins = c.value(val)
-                    else:
-                        st.add_entry(symbol, p.mem_loc)
-                        ins = c.value(p.mem_loc)
-                        p.mem_loc += 1
+                address = self.get_address(symbol, p, st, c)
+                ins = c.a_instruction_binary(address)
             elif c_type == 1:  # C
                 ins = c.c_instruction_binary(c.comp(p.comp()), c.dest(p.dest()), c.jump(p.jump()))
             else:  # L
                 continue
             print(ins)
+
+    def get_address(self, symbol: Optional[str], p: Parser, st: SymbolTable, c: Code) -> int | str:
+        if p.a_command_type() == 1:  # Constant
+            if symbol:
+                return symbol
+            else:
+                raise Exception(f"Unidentified symbol : {symbol}")
+        else:
+            if st.contains(symbol):
+                return st.get_address(symbol)
+            else:
+                st.add_entry(symbol, p.mem_loc)
+                p.mem_loc += 1
+                return p.mem_loc - 1
