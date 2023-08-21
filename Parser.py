@@ -41,31 +41,32 @@ class Parser:
     # L-Instruction
     l_ins = re.compile(r"\(" + a_ins_sym + r"\)")
 
+    # Misc
+    empty_line = r"^[\s]+?$"
+    comment = r"\/\/.*$"
+    white_spaces = r"[\s]+"
+
     def __init__(self, filepath: str) -> None:
         """
         Opens the input file/stream, reads in the contents, removes all
         whitespaces and comments.
         """
-        self.index = -1
-        self.empty_line = r"^[\s]+?$"
-        self.comment = r"\/\/.*$"
-        self.white_space = r"[\s]+"
-
         self.parsed: list[str] = []
-        self.current_command = ""
-
         with open(filepath, "r") as f:
             data = f.read()
-
         self.instructions = data.split("\n")
 
-        for line in self.instructions:
-            line_wo_comments = re.sub(pattern=self.comment, repl="", string=line)
-            stripped_line = re.sub(pattern=self.white_space, repl="", string=line_wo_comments)
-            if instruction := stripped_line.strip():
+        for ins in self.instructions:
+            ins_wo_comments = re.sub(pattern=self.comment, repl="", string=ins)
+            ins_stripped = re.sub(pattern=self.white_spaces, repl="", string=ins_wo_comments)
+            if instruction := ins_stripped.strip():
                 self.parsed.append(instruction)
 
-    def hasMoreCommands(self) -> bool:
+    def __init_vars__(self) -> None:
+        self.index = -1
+        self.current_command = ""
+
+    def has_more_commands(self) -> bool:
         """
         Returns a boolean, denoting if there are more commands in the parsed input.
         """
@@ -78,7 +79,7 @@ class Parser:
         self.index += 1
         self.current_command = self.parsed[self.index]
 
-    def commandType(self) -> Any:
+    def command_type(self) -> Any:
         """
         Returns the type of the current command: A_COMMAND (0), C_COMMAND (1), L_COMMAND (2).
         """
