@@ -65,6 +65,9 @@ class Parser:
     def __init_vars__(self) -> None:
         self.index = -1
         self.current_command = ""
+        self.l_ins_count: int = 0  # Count of L-instructions.
+        # Required for skipping them while getting line number of goto instruction.
+        self.mem_loc = 16  # User variables mapping to memory location.
 
     def has_more_commands(self) -> bool:
         """
