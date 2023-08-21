@@ -57,12 +57,22 @@ class Code:
         return self._to_binary(Code.jmp_symbol_table[mnemonic], bits=bits)
 
     def comp(self, mnemonic: str) -> str:
-        a_bit, bits = "0", 6  # "a" bit is added seperately
+        a_bit, bits = "0", 6  # "a" bit is added separately
         if "M" in mnemonic:
             a_bit = "1"
             mnemonic = mnemonic.replace("M", "A")
         c_bits = self._to_binary(Code.comp_symbol_table[mnemonic], bits=bits)
         return a_bit + c_bits
+
+    def value(self, mnemonic: str) -> str:
+        # A-instruction.
+        bits = 15
+        binary = self._to_binary(int(mnemonic), bits=bits)
+        return "0" + binary
+
+    def c_instruction_binary(self, comp: str, dest: str, jump: str) -> str:
+        starting_bits = "111"
+        return starting_bits + comp + dest + jump
 
     def _to_binary(self, integer: int, bits: int) -> str:
         return bin(integer).split("b")[1].zfill(bits)
@@ -71,6 +81,6 @@ class Code:
         if not string:
             return string
         else:
-            l = list(string)
-            l.sort()
-            return "".join(l)
+            lst = list(string)
+            lst.sort()
+            return "".join(lst)
