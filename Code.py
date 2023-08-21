@@ -64,7 +64,7 @@ class Code:
         c_bits = self._to_binary(Code.comp_symbol_table[mnemonic], bits=bits)
         return a_bit + c_bits
 
-    def value(self, mnemonic: str) -> str:
+    def value(self, mnemonic: str | int) -> str:
         # A-instruction.
         bits = 15
         binary = self._to_binary(int(mnemonic), bits=bits)

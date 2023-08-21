@@ -1,3 +1,6 @@
+from typing import Optional
+
+
 class SymbolTable:
     """
     Keeps a correspondence between symbolic labels like "(LOOP)" and numeric
@@ -40,20 +43,30 @@ class SymbolTable:
     def _add_predefined_values(self) -> None:
         self.symbol_table = {**self.symbol_table, **self.predefined}
 
-    def add_entry(self, symbol: str, address: int) -> None:
+    def add_entry(self, symbol: Optional[str], address: int) -> None:
         """
         Adds the pair (symbol, address) to the table.
         """
-        pass
+        symbol = self._validate_value(symbol)
+        self.symbol_table[symbol] = address
 
-    def contains(self, symbol: str) -> bool:
+    def contains(self, symbol: Optional[str]) -> bool:
         """
         Returns a bool denoting whether the symbol table contain the given symbol.
         """
-        pass
+        symbol = self._validate_value(symbol)
+        return symbol in self.symbol_table
 
-    def get_address(self, symbol: str) -> int:
+    def get_address(self, symbol: Optional[str]) -> int:
         """
         Returns the address associated with the symbol.
         """
-        pass
+        symbol = self._validate_value(symbol)
+        return self.symbol_table[symbol]
+
+    def _validate_value(self, value: Optional[str]) -> str:
+        # This shouldn't happen.
+        if not value:
+            raise Exception(f"Unidentified symbol : {value}")
+        else:
+            return value
