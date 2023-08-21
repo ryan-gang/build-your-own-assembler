@@ -2,6 +2,7 @@ from io import TextIOWrapper
 from Code import Code
 from Parser import Parser
 from SymbolTable import SymbolTable
+import sys
 
 
 class Assembler:
@@ -42,6 +43,8 @@ class Assembler:
                 )
             else:  # L
                 continue
+            self.write(self.write_handle, ins)
+        self.write_handle.close()
 
     def get_address(self, symbol: str) -> int | str:
         if self.p.a_command_type() == 1:  # Constant
@@ -61,6 +64,16 @@ class Assembler:
     def _init_writefile(self) -> TextIOWrapper:
         parts = self.in_file_path.split(".")
         parts[-1] = "hack"
-        out_file_path = "".join(parts)
+        out_file_path = ".".join(parts)
         fhand = open(out_file_path, "w")
         return fhand
+
+    def write(self, fhand: TextIOWrapper, line: str) -> None:
+        fhand.write(line)
+        fhand.write("\n")
+
+
+if __name__ == "__main__":
+    filepath = sys.argv[1]
+    asm = Assembler(filepath)
+    asm.assemble()
