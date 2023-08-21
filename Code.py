@@ -48,22 +48,24 @@ class Code:
     }
 
     def dest(self, mnemonic: Optional[str]) -> str:
+        bits = 3
         mnemonic = self._sort_string(mnemonic)
-        return self._to_binary(Code.dest_symbol_table[mnemonic])
+        return self._to_binary(Code.dest_symbol_table[mnemonic], bits=bits)
 
     def jump(self, mnemonic: Optional[str]) -> str:
-        return self._to_binary(Code.jmp_symbol_table[mnemonic])
+        bits = 3
+        return self._to_binary(Code.jmp_symbol_table[mnemonic], bits=bits)
 
     def comp(self, mnemonic: str) -> str:
-        a_bit = "0"
+        a_bit, bits = "0", 6  # "a" bit is added seperately
         if "M" in mnemonic:
             a_bit = "1"
-            mnemonic.replace("M", "A")
-        c_bits = self._to_binary(Code.comp_symbol_table[mnemonic])
+            mnemonic = mnemonic.replace("M", "A")
+        c_bits = self._to_binary(Code.comp_symbol_table[mnemonic], bits=bits)
         return a_bit + c_bits
 
-    def _to_binary(self, integer: int) -> str:
-        return bin(integer).split("b")[1]
+    def _to_binary(self, integer: int, bits: int) -> str:
+        return bin(integer).split("b")[1].zfill(bits)
 
     def _sort_string(self, string: Optional[str]) -> Optional[str]:
         if not string:
