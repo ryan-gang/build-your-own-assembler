@@ -52,7 +52,7 @@ class Code:
         mnemonic = self._sort_string(mnemonic)
         return self._to_binary(Code.dest_symbol_table[mnemonic], bits=bits)
 
-    def jump(self, mnemonic: Optional[str]) -> str:
+    def jump(self, mnemonic: str) -> str:
         bits = 3
         return self._to_binary(Code.jmp_symbol_table[mnemonic], bits=bits)
 
@@ -64,7 +64,7 @@ class Code:
         c_bits = self._to_binary(Code.comp_symbol_table[mnemonic], bits=bits)
         return a_bit + c_bits
 
-    def value(self, mnemonic: str | int) -> str:
+    def a_instruction_binary(self, mnemonic: str | int) -> str:
         # A-instruction.
         bits = 15
         binary = self._to_binary(int(mnemonic), bits=bits)

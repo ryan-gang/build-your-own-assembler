@@ -1,7 +1,6 @@
 from Parser import Parser
 from Code import Code
 from SymbolTable import SymbolTable
-from typing import Optional
 
 
 class Assembler:
@@ -36,12 +35,9 @@ class Assembler:
                 continue
             print(ins)
 
-    def get_address(self, symbol: Optional[str], p: Parser, st: SymbolTable, c: Code) -> int | str:
+    def get_address(self, symbol: str, p: Parser, st: SymbolTable, c: Code) -> int | str:
         if p.a_command_type() == 1:  # Constant
-            if symbol:
-                return symbol
-            else:
-                raise Exception(f"Unidentified symbol : {symbol}")
+            return symbol
         else:
             if st.contains(symbol):
                 return st.get_address(symbol)

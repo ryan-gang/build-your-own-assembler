@@ -94,7 +94,7 @@ class Parser:
         elif self._is_l_command(command):
             return Parser.L_COMMAND
 
-    def a_command_type(self) -> Any:
+    def a_command_type(self) -> int:
         """
         Returns the type of the current A-instruction value, symbol or decimal.
         1 : @constant
@@ -105,8 +105,10 @@ class Parser:
             return 1
         elif self._is_match(self.a_ins_t2, command):
             return 2
+        else:
+            return 0
 
-    def symbol(self) -> Optional[str]:
+    def symbol(self) -> str:
         """
         Returns the symbol or decimal Xxx of the current command @Xxx or (Xxx).
         """
@@ -124,7 +126,7 @@ class Parser:
         if self._is_match(self.c_ins_dest_comp, command):
             return self._match_result(destination, command.split("=")[0])
 
-    def comp(self) -> Optional[str]:
+    def comp(self) -> str:
         """
         Returns the comp mnemonic in the current C-command.
         """
@@ -132,16 +134,15 @@ class Parser:
         # dest=comp
         if self._is_match(self.c_ins_dest_comp, command):
             return self._match_result(self.c_ins_comp, command.split("=")[1])
-
         # comp
-        if self._is_match(self.c_ins_comp, command):
+        elif self._is_match(self.c_ins_comp, command):
             return self._match_result(self.c_ins_comp, command)
-
         # comp;jump
-        if self._is_match(self.c_ins_comp_jump, command):
+        # elif self._is_match(self.c_ins_comp_jump, command):
+        else:
             return self._match_result(self.c_ins_comp, command)
 
-    def jump(self) -> Optional[str]:
+    def jump(self) -> str:
         """
         Returns the jump mnemonic in the current C-command.
         """
@@ -175,7 +176,16 @@ class Parser:
     def _is_match(self, pattern: re.Pattern[str], string: str) -> bool:
         return re.fullmatch(pattern, string) is not None
 
-    def _match_result(self, pattern: re.Pattern[str], string: str) -> Optional[str]:
+    def _match_result(self, pattern: re.Pattern[str], string: str) -> str:
         matched = re.search(pattern, string)
-        if matched is not None:
-            return matched.group()
+        matched = self._validate_value(matched)
+        res = matched.group()
+        self._validate_value(res)
+        return res
+
+    def _validate_value(self, value: Optional[Any]) -> Any:
+        # Don't return optional values from parser.
+        if not value:
+            raise Exception(f"Unidentified symbol : {value}")
+        else:
+            return value
