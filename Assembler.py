@@ -1,3 +1,4 @@
+from io import TextIOWrapper
 from Code import Code
 from Parser import Parser
 from SymbolTable import SymbolTable
@@ -5,10 +6,14 @@ from SymbolTable import SymbolTable
 
 class Assembler:
     def __init__(self, filepath: str) -> None:
+        self.in_file_path = filepath
+
         self.p = Parser(filepath)
         self.p.__init_vars__()
         self.c = Code()
         self.st = SymbolTable()
+
+        self.write_handle = self._init_writefile()
 
     def first_pass(self) -> None:
         while self.p.has_more_commands():
@@ -37,7 +42,6 @@ class Assembler:
                 )
             else:  # L
                 continue
-            print(ins)
 
     def get_address(self, symbol: str) -> int | str:
         if self.p.a_command_type() == 1:  # Constant
@@ -53,3 +57,10 @@ class Assembler:
     def assemble(self):
         self.first_pass()
         self.second_pass()
+
+    def _init_writefile(self) -> TextIOWrapper:
+        parts = self.in_file_path.split(".")
+        parts[-1] = "hack"
+        out_file_path = "".join(parts)
+        fhand = open(out_file_path, "w")
+        return fhand
