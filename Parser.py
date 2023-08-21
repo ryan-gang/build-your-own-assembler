@@ -90,6 +90,18 @@ class Parser:
         elif self._is_l_command(command):
             return Parser.L_COMMAND
 
+    def a_command_type(self) -> Any:
+        """
+        Returns the type of the current A-instruction value, symbol or decimal.
+        1 : @constant
+        2 : @symbol
+        """
+        command = self.current_command
+        if self._is_match(self.a_ins_t1, command):
+            return 1
+        elif self._is_match(self.a_ins_t2, command):
+            return 2
+
     def symbol(self) -> Optional[str]:
         """
         Returns the symbol or decimal Xxx of the current command @Xxx or (Xxx).
