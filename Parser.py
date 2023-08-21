@@ -114,7 +114,8 @@ class Parser:
         """
         command = self.current_command
         a_l_ins_symbol = re.compile(self.a_ins_sym)
-        return self._match_result(a_l_ins_symbol, command)
+        res = self._match_result(a_l_ins_symbol, command)
+        return self._validate_value(res)
 
     def dest(self) -> Optional[str]:
         """
@@ -133,16 +134,17 @@ class Parser:
         command = self.current_command
         # dest=comp
         if self._is_match(self.c_ins_dest_comp, command):
-            return self._match_result(self.c_ins_comp, command.split("=")[1])
+            res = self._match_result(self.c_ins_comp, command.split("=")[1])
         # comp
         elif self._is_match(self.c_ins_comp, command):
-            return self._match_result(self.c_ins_comp, command)
+            res = self._match_result(self.c_ins_comp, command)
         # comp;jump
         # elif self._is_match(self.c_ins_comp_jump, command):
         else:
-            return self._match_result(self.c_ins_comp, command)
+            res = self._match_result(self.c_ins_comp, command)
+        return self._validate_value(res)
 
-    def jump(self) -> str:
+    def jump(self) -> Optional[str]:
         """
         Returns the jump mnemonic in the current C-command.
         """
@@ -176,12 +178,10 @@ class Parser:
     def _is_match(self, pattern: re.Pattern[str], string: str) -> bool:
         return re.fullmatch(pattern, string) is not None
 
-    def _match_result(self, pattern: re.Pattern[str], string: str) -> str:
+    def _match_result(self, pattern: re.Pattern[str], string: str) -> Optional[str]:
         matched = re.search(pattern, string)
-        matched = self._validate_value(matched)
-        res = matched.group()
-        self._validate_value(res)
-        return res
+        if matched is not None:
+            return matched.group()
 
     def _validate_value(self, value: Optional[Any]) -> Any:
         # Don't return optional values from parser.

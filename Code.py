@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import Optional, Any
 
 
 class Code:
@@ -52,7 +52,7 @@ class Code:
         mnemonic = self._sort_string(mnemonic)
         return self._to_binary(Code.dest_symbol_table[mnemonic], bits=bits)
 
-    def jump(self, mnemonic: str) -> str:
+    def jump(self, mnemonic: Optional[str]) -> str:
         bits = 3
         return self._to_binary(Code.jmp_symbol_table[mnemonic], bits=bits)
 
@@ -84,3 +84,10 @@ class Code:
             lst = list(string)
             lst.sort()
             return "".join(lst)
+
+    def _validate_value(self, value: Optional[Any]) -> str:
+        # Don't return optional values from parser.
+        if not value:
+            raise Exception(f"Unidentified symbol : {value}")
+        else:
+            return value
