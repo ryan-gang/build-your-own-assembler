@@ -4,6 +4,7 @@ class SymbolTable:
     addresses (RAM and ROM).
     """
 
+    # Predefined symbols.
     predefined = {
         "SP": 0,
         "LCL": 1,
@@ -38,6 +39,9 @@ class SymbolTable:
         self._add_predefined_values()
 
     def _add_predefined_values(self) -> None:
+        """
+        Add the predefined key-value pairs into the symbol table.
+        """
         self.symbol_table = {**self.symbol_table, **self.predefined}
 
     def add_entry(self, symbol: str, address: int) -> None:
@@ -48,7 +52,7 @@ class SymbolTable:
 
     def contains(self, symbol: str) -> bool:
         """
-        Returns a bool denoting whether the symbol table contain the given symbol.
+        Returns a bool denoting whether the symbol table contains the given symbol.
         """
         return symbol in self.symbol_table
 

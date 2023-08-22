@@ -63,6 +63,9 @@ class Parser:
                 self.parsed.append(instruction)
 
     def __init_vars__(self) -> None:
+        """
+        Instantiate class variables, and provide a handy to reset them.
+        """
         self.index = -1
         self.current_command = ""
         self.l_ins_count: int = 0  # Count of L-instructions.
@@ -163,11 +166,9 @@ class Parser:
         """
         Return a bool denoting if command is a C command.
         """
-        return (
-            self._is_match(self.c_ins_comp, command)
-            or self._is_match(self.c_ins_comp_jump, command)
-            or self._is_match(self.c_ins_dest_comp, command)
-        )
+        return (self._is_match(self.c_ins_comp, command) or self._is_match(self.c_ins_comp_jump,
+                                                                           command) or self._is_match(
+            self.c_ins_dest_comp, command))
 
     def _is_l_command(self, command: str) -> bool:
         """
@@ -176,15 +177,24 @@ class Parser:
         return self._is_match(self.l_ins, command)
 
     def _is_match(self, pattern: re.Pattern[str], string: str) -> bool:
+        """
+        Returns if a match is found for `pattern` in `string`.
+        """
         return re.fullmatch(pattern, string) is not None
 
     def _match_result(self, pattern: re.Pattern[str], string: str) -> Optional[str]:
+        """
+        Return match results found for `pattern` in `string`.
+        Returns None if no match found.
+        """
         matched = re.search(pattern, string)
         if matched is not None:
             return matched.group()
 
     def _validate_value(self, value: Optional[Any]) -> Any:
-        # Don't return optional values from parser.
+        """
+        Validate the output of parsing isn't None.
+        """
         if not value:
             raise Exception(f"Unidentified symbol : {value}")
         else:
