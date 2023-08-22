@@ -35,29 +35,28 @@ class SymbolTable:
         """
         Initializes a new empty symbol table, and adds predefined values.
         """
-        self.symbol_table: dict[str, int] = {}
-        self._add_predefined_values()
+        pass
 
     def _add_predefined_values(self) -> None:
         """
         Add the predefined key-value pairs into the symbol table.
         """
-        self.symbol_table = {**self.symbol_table, **self.predefined}
+        pass
 
     def add_entry(self, symbol: str, address: int) -> None:
         """
         Adds the pair (symbol, address) to the table.
         """
-        self.symbol_table[symbol] = address
+        pass
 
     def contains(self, symbol: str) -> bool:
         """
         Returns a bool denoting whether the symbol table contains the given symbol.
         """
-        return symbol in self.symbol_table
+        pass
 
     def get_address(self, symbol: str) -> int:
         """
         Returns the address associated with the symbol.
         """
-        return self.symbol_table[symbol]
+        pass
